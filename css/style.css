@@ -1,0 +1,158 @@
+*,
+*:before,
+*:after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+h1 {
+  padding-top: 20px;
+  text-align: center;
+  color: #fff;
+  font-size: 1.8em;
+}
+
+header {
+  background-color: #a13333;
+  height: 80px;
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+aside {
+  position: relative;
+}
+
+.list_container {
+  width: 200px;
+  height: calc(100vh - 80px - 50px - 50px);
+
+  overflow-x: hidden;
+
+  position: fixed;
+  left: 0;
+  top: 130px;
+  transform: translateX(-200px);
+  transition: .2s cubic-bezier(1, -0.21, 1, 1);
+  scroll-behavior: smooth;
+}
+
+.aside_button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  background-color: #d05353;
+
+  position: fixed;
+  left: calc(200px + 30px);
+  top: 110px;
+  transform: translateX(-200px);
+  transition: .2s cubic-bezier(0.95, -0.53, 1, 1);
+}
+
+.aside_button:hover {
+  cursor: pointer;
+}
+
+.scroll {
+  width: 200px;
+  height: 50px;
+  background-color: transparent;
+
+  position: fixed;
+  transform: translateX(-200px);
+  transition: .2s cubic-bezier(1, -0.21, 1, 1);
+}
+.upper {
+  left: 0;
+  top: 80px;
+}
+.lower {
+  left: 0;
+  bottom: 0;
+}
+
+.up_arrow {
+  margin: 0 auto;
+  width: 0;
+  border: 17px transparent solid;
+  border-bottom: 17px #c1c1c1 solid;
+}
+.down_arrow {
+  margin: 17px auto 0;
+  width: 0;
+  border: 17px transparent solid;
+  border-top: 17px #c1c1c1 solid;
+}
+
+.list_container>ul>li {
+  padding: 5px 10px;
+  margin-bottom: 3px;
+
+  color: #000;
+  text-shadow: 1px 1px 1px #fff;
+  list-style-type: none;
+  border-radius: 10px;
+  background-color: #f1f1f1;
+}
+
+.list_container>ul>li:hover,
+.list_container>ul>li:focus {
+  background-color: #c1c1c1;
+  cursor: pointer;
+}
+.list_container>ul>li:active {
+  background-color: #888;
+}
+
+.scroll {
+  cursor: pointer;
+}
+.scroll:hover>.up_arrow {
+  border-bottom-color: #888;
+}
+.scroll:hover>.down_arrow {
+  border-top-color: #888;
+}
+.scroll:active>.up_arrow {
+  border-bottom-color: #555;
+}
+.scroll:active>.down_arrow {
+  border-top-color: #555;
+}
+
+.block {
+  width: 50vw;
+  margin: 0 auto;
+  padding: 100px 0 0 100px;
+}
+
+h2 {
+  margin: 10px;
+  text-align: center;
+  font-size: 3em;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 5px;
+}
+
+.image {
+  width: 100%;
+}
