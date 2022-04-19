@@ -3,7 +3,6 @@ function fillItemList() {
     fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic`)
     .then(res => res.json()) // parse response as JSON
     .then(data => {
-        // console.log(data)
         for (let drink of data.drinks) {
             itemList.push(drink.strDrink)
         }
@@ -68,9 +67,7 @@ function sidebarTextToBlock() {
             fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktail.toLowerCase()}`)
             .then(res => res.json())
             .then(data => {
-                document.querySelector('.name').textContent = data.drinks[0].strDrink
-                document.querySelector('.image').src = data.drinks[0].strDrinkThumb
-                document.querySelector('.instructions').textContent = data.drinks[0].strInstructions
+                renderCocktails(data);
             })
             .catch(err => {
                 console.log(`error ${err}`)
@@ -78,24 +75,21 @@ function sidebarTextToBlock() {
         }        
     })    
 }
-function searchToBlock() {  
-  console.log('drink')
-  document.querySelector('button').addEventListener('click', function() {
+function searchToBlock() {
+  document.querySelector('#getCocktails').addEventListener('click', function() {
         const drink = document.querySelector('input').value;
         if (drink) {
             fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${drink}`)
             .then(res => res.json())
             .then(data => {
-                if (data.drinks[0].strAlcoholic === "Non alcoholic") {
-                    document.querySelector('.name').textContent = data.drinks[0].strDrink;
-                    document.querySelector('.image').src = data.drinks[0].strDrinkThumb;
-                    document.querySelector('.instructions').textContent = data.drinks[0].strInstructions;  
-      
-                } else if (data.drinks[0].strAlcoholic === "Alcoholic") {  
-                    document.querySelector('.name').textContent = 'Alcohol is BAD, mmkay?';
-                    document.querySelector('.image').src = '';
-                    document.querySelector('.instructions').textContent = '';
+                if (data.drinks) {
+                    data.drinks = data.drinks.filter((drink) => drink.strAlcoholic === "Non alcoholic");
+                } else {
+                    console.log('no cocktail for your query')
                 }
+                
+                renderCocktails(data);
+                    
             })
             .catch(err => {
                 console.log(`error ${err}`)
@@ -103,6 +97,54 @@ function searchToBlock() {
         }      
     })
 }
+
+function renderCocktails(cocktObj) {
+    if (cocktObj.drinks.length > 0) {
+        const items = document.querySelector('.carousel-inner');
+        const indicators = document.querySelector('.carousel-indicators');
+        const arrows = document.querySelectorAll('.arrow');
+
+        items.innerHTML = '';
+        indicators.innerHTML = '';
+        indicators.style.display = 'none';
+        arrows.forEach((arrow) => arrow.style.display = 'none');
+        
+        for (let drink of cocktObj.drinks) {
+            const carouselItem = document.createElement('div');
+            carouselItem.classList.add('carousel-item');
+
+            const image = document.createElement('img');
+            image.classList.add('d-block', 'w-100');
+            image.src = drink.strDrinkThumb;
+            carouselItem.appendChild(image);
+            items.appendChild(carouselItem);
+
+            const indicator = document.createElement('button');
+            indicator.dataset.bsTarget = "#myCarousel";
+            indicator.dataset.bsSlideTo = `${cocktObj.drinks.indexOf(drink)}`;
+            indicator.setAttribute('aria-label', `Slide ${cocktObj.drinks.indexOf(drink) + 1}`)
+            indicator.setAttribute('type', 'button');
+            indicators.appendChild(indicator);
+
+            if (drink === cocktObj.drinks[0]) {
+                carouselItem.classList.add('active');
+                indicator.classList.add('active');
+                indicator.setAttribute('aria-current', "true");
+            }
+        }
+        if (cocktObj.drinks.length > 1) {
+            indicators.style.display = 'flex';
+            arrows.forEach((arrow) => arrow.style.display = 'flex');            
+        }
+        // document.querySelector('.name').textContent = cocktObj.drinks[0].strDrink;
+        // document.querySelector('.image').src = cocktObj.drinks[0].strDrinkThumb;
+        // document.querySelector('.instructions').textContent = cocktObj.drinks[0].strInstructions;  
+
+    } else {
+        console.log('no Non-alcoholic cocktail for your query')
+    }
+}
+
 
 fillItemList()
 searchToBlock()
