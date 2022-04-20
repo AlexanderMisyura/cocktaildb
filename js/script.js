@@ -26,21 +26,21 @@ function createSidebar(items) {
 function toggleSidebar() {
     const asideButton = document.querySelector('.aside_button')
     const asideBar = document.querySelector('.list_container')
-    const scrollButton = document.querySelectorAll('.scroll')
+    const scrollButtons = document.querySelectorAll('.scroll')
     let hide = true
     asideButton.onclick = function () {
         hide = !hide
         if (hide) {
             asideBar.style.transform = 'translateX(-200px)'
             asideButton.style.transform = 'translateX(-200px)'
-            scrollButton.forEach(function (scroll) {
-                scroll.style.transform = 'translateX(-200px)'
+            scrollButtons.forEach(function (scrollButton) {
+                scrollButton.style.transform = 'translateX(-200px)'
             })
         } else {
             asideBar.style.transform = 'translateX(0px)'
             asideButton.style.transform = 'translateX(0px)'
-            scrollButton.forEach(function (scroll) {
-                scroll.style.transform = 'translateX(0)'
+            scrollButtons.forEach(function (scrollButton) {
+                scrollButton.style.transform = 'translateX(0)'
             })
         }
     }
@@ -50,10 +50,10 @@ function scrollSidebar() {
     const container = document.querySelector('.list_container')
     scrollButtons.forEach(function (scrollButton) {
         scrollButton.addEventListener('click', function () {
-            if (scrollButton.getAttribute('data-function') === 'up') {
+            if (scrollButton.dataset.scroll === 'up') {
                 container.scrollTop -= 400
                     // (window.innerHeight - 80 - 50 * 2) / 2
-            } else if (scrollButton.getAttribute('data-function') === 'down') {
+            } else if (scrollButton.dataset.scroll === 'down') {
                 container.scrollTop += 400
             }
         })
