@@ -2,25 +2,23 @@ const itemList = []
 function fillItemList() {
     fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic`)
     .then(res => res.json()) // parse response as JSON
-    .then(data => {
-        for (let drink of data.drinks) {
-            itemList.push(drink.strDrink)
-        }
-        createSidebar(itemList)
-        toggleSidebar()
-        scrollSidebar()
-        sidebarTextToBlock()
+    .then(data => {        
+        createSidebar(data);
+        toggleSidebar();
+        scrollSidebar();
+        sidebarTextToBlock();
     })
     .catch(err => {
         console.log(`error ${err}`)
     });
 }
-function createSidebar(items) {
-    const navigationList = document.querySelector('.list_container>ul')
-    items.forEach(function (item) {
-        let menuElement = document.createElement('li')
-        menuElement.textContent = item
-        navigationList.append(menuElement)
+function createSidebar(cocktObj) {
+    const navigationList = document.querySelector('.list_container>ul');
+    cocktObj.drinks.forEach(function (drink) {
+        let menuElement = document.createElement('li');
+        menuElement.textContent = drink.strDrink;
+        menuElement.dataset.cocktId = drink.idDrink;
+        navigationList.append(menuElement);
     })
 }
 function toggleSidebar() {
@@ -61,10 +59,10 @@ function scrollSidebar() {
 }
 function sidebarTextToBlock() {
     const list = document.querySelector('.list_container>ul')    
-    list.addEventListener('click', function (e) {
+    list.addEventListener('click', (e) => {
         if (e.target !== list) {
-            cocktail = e.target.textContent;
-            fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktail.toLowerCase()}`)
+            cocktailID = e.target.dataset.cocktId;
+            fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailID}`)
             .then(res => res.json())
             .then(data => {
                 renderCocktails(data);
@@ -99,6 +97,7 @@ function searchToBlock() {
 }
 
 function renderCocktails(cocktObj) {
+    console.log(cocktObj);
     if (cocktObj.drinks.length > 0) {
         const items = document.querySelector('.carousel-inner');
         const indicators = document.querySelector('.carousel-indicators');
@@ -122,9 +121,42 @@ function renderCocktails(cocktObj) {
             const indicator = document.createElement('button');
             indicator.dataset.bsTarget = "#myCarousel";
             indicator.dataset.bsSlideTo = `${cocktObj.drinks.indexOf(drink)}`;
-            indicator.setAttribute('aria-label', `Slide ${cocktObj.drinks.indexOf(drink) + 1}`)
+            indicator.setAttribute('aria-label', `Slide ${cocktObj.drinks.indexOf(drink) + 1}`);
             indicator.setAttribute('type', 'button');
             indicators.appendChild(indicator);
+
+            const caption = document.createElement('div');
+            caption.classList.add('carousel-caption', 'd-none', 'd-md-block');
+            carouselItem.appendChild(caption);
+            const cocktName = document.createElement('h5');
+            cocktName.textContent = drink.strDrink;
+            caption.appendChild(cocktName);
+
+            const ingredients = document.createElement('ul');
+            caption.appendChild(ingredients);
+
+            for (let i = 1; drink[`strIngredient${i}`] || drink[`strMeasure${i}`]; i++) {
+                const ingredient = document.createElement('li');
+                ingredient.textContent = `${drink[`strIngredient${i}`]}: ${drink[`strMeasure${i}`]}`;
+                ingredients.appendChild(ingredient);
+            }
+
+            const instruction = document.createElement('p');
+            instruction.textContent = drink.strInstructions;
+            caption.appendChild(instruction);
+
+
+            // function fillIngrediens() {
+            //     const ingreditentList = drink.filter((propName) => propName)
+            //     let i = 1;
+            //     let ingredientProp = `strIngreient${i}`;
+                
+            //     while (drink[ingredientProp] !== null) {
+                    
+            //         i += 1;
+            //     }
+            // }
+
 
             if (drink === cocktObj.drinks[0]) {
                 carouselItem.classList.add('active');
@@ -141,10 +173,10 @@ function renderCocktails(cocktObj) {
         // document.querySelector('.instructions').textContent = cocktObj.drinks[0].strInstructions;  
 
     } else {
-        console.log('no Non-alcoholic cocktail for your query')
+        console.log('no Non-alcoholic cocktail for your query');
     }
 }
 
 
-fillItemList()
-searchToBlock()
+fillItemList();
+searchToBlock();
